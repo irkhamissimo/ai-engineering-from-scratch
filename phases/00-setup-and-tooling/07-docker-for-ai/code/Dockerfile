@@ -1,7 +1,8 @@
-FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3.12 \
@@ -15,13 +16,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1
 
-RUN python -m pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN python -m pip install --no-cache-dir --upgrade --ignore-installed pip setuptools wheel
 
 RUN python -m pip install --no-cache-dir \
-    torch==2.3.1 \
-    torchvision==0.18.1 \
-    torchaudio==2.3.1 \
-    --index-url https://download.pytorch.org/whl/cu124
+    torch torchvision torchaudio \
+    --index-url https://download.pytorch.org/whl/cpu
 
 RUN python -m pip install --no-cache-dir \
     numpy \
